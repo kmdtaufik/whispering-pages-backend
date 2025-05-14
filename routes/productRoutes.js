@@ -6,9 +6,10 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productControllers");
-//CRUD operations
+//CRUD operations routes
 router.post("/", createProduct);
-router.get("/", getProducts);
+router.get("/:id", getProducts);
+router.get("/", getProducts); // For searching by name
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
 

@@ -15,7 +15,28 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    originalPrice: {
+      type: Number,
+      required: true,
+    },
+    productImage: {
+      type: String,
+      required: true,
+    },
+    discount: {
+      type: Number,
+      required: true,
+    },
+    isHot: {
+      type: Boolean,
+      default: false,
+    },
+    notAvailable: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   { timestamps: true }
 );
 
