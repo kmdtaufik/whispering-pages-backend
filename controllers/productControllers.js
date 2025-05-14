@@ -11,7 +11,10 @@ const getProducts = async (req, res) => {
   try {
     const productId = req.params.id;
     const productName = req.query.name;
-    const sortBy = req.query.sort; // e.g., 'productPrice', 'productName','-' --> descending
+    const sortBy = req.query.sort; // e.g., 'productPrice', '-productName'
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
     if (productId) {
       const product = await Product.findById(productId).lean();
@@ -32,7 +35,11 @@ const getProducts = async (req, res) => {
       query = query.sort(sortBy);
     }
 
+    // Apply pagination
+    query = query.skip(skip).limit(limit);
+
     const products = await query;
+    const total = await Product.countDocuments(filter);
 
     if (products.length === 0) {
       return res
@@ -40,7 +47,13 @@ const getProducts = async (req, res) => {
         .json({ message: "No products found matching criteria" });
     }
 
-    return res.status(200).json(products);
+    return res.status(200).json({
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+      products,
+    });
   } catch (error) {
     console.error("Error retrieving products:", error);
     return res.status(500).json({ message: "Internal server error" });
