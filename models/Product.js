@@ -185,24 +185,25 @@ const productSchema = new mongoose.Schema(
     shippingInfo: {
       weight: {
         type: Number,
-        required: true,
+        required: false,
       },
       dimensions: {
-        length: { type: Number, required: true },
-        width: { type: Number, required: true },
-        height: { type: Number, required: true },
+        length: { type: Number, required: false },
+        width: { type: Number, required: false },
+        height: { type: Number, required: false },
       },
       shippingFrom: {
         type: String,
-        required: true,
+        required: false,
       },
+
       shippingTo: {
         type: String,
-        required: true,
+        required: false,
       },
       shippingCost: {
         type: Number,
-        required: true,
+        required: false,
         default: 0,
       },
     },
