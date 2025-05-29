@@ -209,9 +209,9 @@ const productSchema = new mongoose.Schema(
 );
 
 // Add indexes for better performance
-productSchema.index({ slug: 1 });
-productSchema.index({ sku: 1 });
-productSchema.index({ barcode: 1 });
+// productSchema.index({ slug: 1 });
+// productSchema.index({ sku: 1 });
+// productSchema.index({ barcode: 1 });
 productSchema.index({ productName: "text", productDescription: "text" });
 productSchema.index({ category: 1, subCategory: 1 });
 productSchema.index({ brand: 1 });
