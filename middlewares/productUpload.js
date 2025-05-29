@@ -8,11 +8,34 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const fileExtension = path.extname(file.originalname);
-    const uniqueName = `${Date.now()}-${file.field}${fileExtension}`;
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
+      file.fieldname
+    }${fileExtension}`;
     cb(null, uniqueName);
   },
 });
 
-//product upload
-const productUpload = multer({ storage });
+// File filter for images only
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extname = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimetype = allowedTypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed"));
+  }
+};
+
+const productUpload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+});
+
 module.exports = productUpload;

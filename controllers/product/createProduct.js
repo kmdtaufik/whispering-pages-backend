@@ -50,18 +50,39 @@ const createProduct = async (req, res) => {
 
     console.log("Received product data:", req.body);
 
-    //Parsed fields
-    const parsedVariants = variants ? JSON.parse(variants) : [];
-    const parsedSpecification = JSON.parse(specification || "{}");
-    const parsedShippingInfo = JSON.parse(shippingInfo || "{}");
-    const parsedMetaKeywords = JSON.parse(metaKeywords || "[]");
-    const parsedTags = JSON.parse(tags || "[]");
-    const parsedCustomFields = JSON.parse(customFields || "[]");
+    // Parse fields with better error handling
+    let parsedVariants = [];
+    let parsedSpecification = [];
+    let parsedShippingInfo = {};
+    let parsedMetaKeywords = [];
+    let parsedTags = [];
+    let parsedCustomFields = [];
 
-    // Handle file uploads for productThumbnail and productImages
-    const productThumbnail = req.files?.thumbnail?.[0]?.path || null;
+    try {
+      parsedVariants = variants ? JSON.parse(variants) : [];
+      parsedSpecification = specification ? JSON.parse(specification) : [];
+      parsedShippingInfo = shippingInfo ? JSON.parse(shippingInfo) : {};
+      parsedMetaKeywords = metaKeywords ? JSON.parse(metaKeywords) : [];
+      parsedTags = tags ? JSON.parse(tags) : [];
+      parsedCustomFields = customFields ? JSON.parse(customFields) : [];
+    } catch (parseError) {
+      return res.status(400).json({
+        message: "Invalid JSON format in request data",
+        error: parseError.message,
+      });
+    }
+
+    // Handle file uploads
+    const productThumbnail = req.files?.thumbnail?.[0]?.filename || null;
     const productImages =
-      req.files?.images?.map((file) => file.path).join(",") || [];
+      req.files?.images?.map((file) => file.filename).join(",") || "";
+
+    // Validate required fields
+    if (!productThumbnail) {
+      return res.status(400).json({
+        message: "Product thumbnail is required",
+      });
+    }
 
     // Create the product object
     const newProduct = new Product({
@@ -111,17 +132,34 @@ const createProduct = async (req, res) => {
       shippingInfo: parsedShippingInfo,
     });
 
-    // Save the product
-    // await newProduct.save();
-    //console log the new product to the console
-    console.log(newProduct);
+    // Save the product to database
+    const savedProduct = await newProduct.save();
+    console.log("Product saved successfully:", savedProduct._id);
 
     return res.status(201).json({
       success: true,
       message: "Product Created Successfully",
-      newProduct,
+      product: savedProduct,
     });
   } catch (error) {
+    console.error("Error creating product:", error);
+
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: Object.values(error.errors).map((err) => err.message),
+      });
+    }
+
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "Product with this slug, SKU, or barcode already exists",
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       message: "An error occurred while creating the product.",
       error: error.message,

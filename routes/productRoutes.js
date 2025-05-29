@@ -12,7 +12,7 @@ router.post(
   productUpload.fields([
     { name: "thumbnail", maxCount: 1 },
     {
-      name: "image",
+      name: "images", // Fixed: was "image", should be "images"
       maxCount: 5,
     },
   ]),

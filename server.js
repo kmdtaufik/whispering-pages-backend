@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const productRoutes = require("./routes/productRoutes");
+const cors = require("cors");
 
 dotenv.config(); // Load environment variables
 
@@ -13,6 +14,13 @@ app.get("/", (req, res) => {
   //(res,req)incorrect order (req,res) correct order
   res.send("API is running...");
 });
+// Middleware for CORS
+// Use the cors middleware to allow requests from your frontend origin
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 
 app.use("/api/products", productRoutes);
 

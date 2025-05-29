@@ -178,10 +178,8 @@ const productSchema = new mongoose.Schema(
         fieldValue: { type: String },
       },
     ],
-  },
 
-  //Shipping info
-  {
+    // Shipping info - moved inside main schema
     shippingInfo: {
       weight: {
         type: Number,
@@ -196,7 +194,6 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: false,
       },
-
       shippingTo: {
         type: String,
         required: false,
@@ -210,5 +207,15 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Add indexes for better performance
+productSchema.index({ slug: 1 });
+productSchema.index({ sku: 1 });
+productSchema.index({ barcode: 1 });
+productSchema.index({ productName: "text", productDescription: "text" });
+productSchema.index({ category: 1, subCategory: 1 });
+productSchema.index({ brand: 1 });
+productSchema.index({ productPrice: 1 });
+productSchema.index({ isDeleted: 1 });
 
 module.exports = mongoose.model("Product", productSchema);

@@ -2,45 +2,85 @@ const Product = require("../../models/Product");
 
 const getProducts = async (req, res) => {
   try {
-    const productName = req.query.name;
-    const sortBy = req.query.sort; // e.g., 'productPrice', '-productName'
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const {
+      name,
+      category,
+      subCategory,
+      brand,
+      sort,
+      page = 1,
+      limit = 10,
+      minPrice,
+      maxPrice,
+    } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    let filter = {};
-    if (productName) {
-      filter.productName = { $regex: new RegExp(productName, "i") };
+    // Build filter object
+    let filter = { isDeleted: { $ne: true } }; // Exclude soft-deleted products
+
+    if (name) {
+      filter.$text = { $search: name };
     }
 
-    let query = Product.find(filter).lean();
-
-    if (sortBy) {
-      query = query.sort(sortBy);
+    if (category) {
+      filter.category = category;
     }
 
-    // Apply pagination
-    query = query.skip(skip).limit(limit);
-
-    const products = await query;
-    const total = await Product.countDocuments(filter);
-
-    if (products.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No products found matching criteria" });
+    if (subCategory) {
+      filter.subCategory = subCategory;
     }
+
+    if (brand) {
+      filter.brand = brand;
+    }
+
+    if (minPrice || maxPrice) {
+      filter.productPrice = {};
+      if (minPrice) filter.productPrice.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.productPrice.$lte = parseFloat(maxPrice);
+    }
+
+    // Build sort object
+    let sortOption = {};
+    if (sort) {
+      const sortFields = sort.split(",");
+      sortFields.forEach((field) => {
+        if (field.startsWith("-")) {
+          sortOption[field.substring(1)] = -1;
+        } else {
+          sortOption[field] = 1;
+        }
+      });
+    } else {
+      sortOption.createdAt = -1; // Default sort by newest
+    }
+
+    // Execute queries in parallel
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .select("-__v") // Exclude version field
+        .lean(),
+      Product.countDocuments(filter),
+    ]);
 
     return res.status(200).json({
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
+      success: true,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalPages: Math.ceil(total / parseInt(limit)),
       totalItems: total,
       products,
     });
   } catch (error) {
     console.error("Error retrieving products:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
