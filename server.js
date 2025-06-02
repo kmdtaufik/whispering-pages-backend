@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 // Use the cors middleware to allow requests from your frontend origin
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://whispering-pages-admin-panel.vercel.app", // Replace with your frontend URL
   })
 );
 
