@@ -30,7 +30,14 @@ router.post(
 );
 router.get("/:id", getProductsById);
 router.get("/", getProducts);
-router.put("/:id", updateProduct);
+router.put(
+  "/:id",
+  productUpload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+  ]),
+  updateProduct
+);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;

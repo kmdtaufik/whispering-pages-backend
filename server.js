@@ -3,19 +3,13 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const productRoutes = require("./routes/productRoutes");
 const cors = require("cors");
+const path = require("path");
 
 dotenv.config(); // Load environment variables
 
 const app = express();
-app.use(express.json());
 
-//Home Route
-app.get("/", (req, res) => {
-  //(res,req)incorrect order (req,res) correct order
-  res.send("API is running...");
-});
-// Middleware for CORS
-// Use the cors middleware to allow requests from your frontend origin
+// Middleware for CORS - must be before routes
 app.use(
   cors({
     origin: [
@@ -25,6 +19,16 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+// Serve static files from uploads directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+//Home Route
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 app.use("/api/products", productRoutes);
 
