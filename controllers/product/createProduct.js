@@ -54,21 +54,49 @@ const createProduct = async (req, res) => {
     let parsedVariants = [];
     let parsedSpecification = [];
     let parsedShippingInfo = {};
-    let parsedMetaKeywords = [];
-    let parsedTags = [];
     let parsedCustomFields = [];
+    // Handle tags and metaKeywords as comma-separated strings, not JSON
+    let parsedTags = [];
+    let parsedMetaKeywords = [];
 
     try {
-      parsedVariants = variants ? JSON.parse(variants) : [];
-      parsedSpecification = specification ? JSON.parse(specification) : [];
-      parsedShippingInfo = shippingInfo ? JSON.parse(shippingInfo) : {};
-      parsedMetaKeywords = metaKeywords ? JSON.parse(metaKeywords) : [];
-      parsedTags = tags ? JSON.parse(tags) : [];
-      parsedCustomFields = customFields ? JSON.parse(customFields) : [];
+      // Only parse JSON fields that are actually JSON
+      parsedVariants =
+        variants && variants.trim() !== "" ? JSON.parse(variants) : [];
+      parsedSpecification =
+        specification && specification.trim() !== ""
+          ? JSON.parse(specification)
+          : [];
+      parsedShippingInfo =
+        shippingInfo && shippingInfo.trim() !== ""
+          ? JSON.parse(shippingInfo)
+          : {};
+      parsedCustomFields =
+        customFields && customFields.trim() !== ""
+          ? JSON.parse(customFields)
+          : [];
+
+      // Handle tags and metaKeywords as JSON arrays
+      parsedTags = tags && tags.trim() !== "" ? JSON.parse(tags) : [];
+      parsedMetaKeywords =
+        metaKeywords && metaKeywords.trim() !== ""
+          ? JSON.parse(metaKeywords)
+          : [];
     } catch (parseError) {
+      console.error("JSON parsing error:", parseError);
+      console.error("Problematic fields:", {
+        variants,
+        specification,
+        shippingInfo,
+        customFields,
+        tags,
+        metaKeywords,
+      });
       return res.status(400).json({
         message: "Invalid JSON format in request data",
         error: parseError.message,
+        fields:
+          "Check variants, specification, shippingInfo, customFields, tags, or metaKeywords",
       });
     }
 
