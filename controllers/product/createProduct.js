@@ -49,6 +49,7 @@ const createProduct = async (req, res) => {
     } = req.body;
 
     console.log("Received product data:", req.body);
+    console.log("Received files:", req.files);
 
     // Parse fields with better error handling
     let parsedVariants = [];
@@ -82,21 +83,31 @@ const createProduct = async (req, res) => {
         metaKeywords && metaKeywords.trim() !== ""
           ? JSON.parse(metaKeywords)
           : [];
+
+      console.log("Parsed arrays:", { parsedTags, parsedMetaKeywords });
     } catch (parseError) {
       console.error("JSON parsing error:", parseError);
-      console.error("Problematic fields:", {
+      console.error("Raw values:", {
+        tags,
+        metaKeywords,
         variants,
         specification,
         shippingInfo,
         customFields,
-        tags,
-        metaKeywords,
       });
       return res.status(400).json({
         message: "Invalid JSON format in request data",
         error: parseError.message,
         fields:
           "Check variants, specification, shippingInfo, customFields, tags, or metaKeywords",
+        receivedData: {
+          tags,
+          metaKeywords,
+          variants,
+          specification,
+          shippingInfo,
+          customFields,
+        },
       });
     }
 

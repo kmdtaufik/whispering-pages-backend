@@ -9,6 +9,11 @@ const productUpload = require("../middlewares/productUpload");
 //CRUD operations routes
 router.post(
   "/",
+  (req, res, next) => {
+    console.log("Incoming request headers:", req.headers);
+    console.log("Content-Type:", req.get("Content-Type"));
+    next();
+  },
   productUpload.fields([
     { name: "thumbnail", maxCount: 1 },
     {
@@ -16,6 +21,11 @@ router.post(
       maxCount: 5,
     },
   ]),
+  (req, res, next) => {
+    console.log("After multer - Body:", req.body);
+    console.log("After multer - Files:", req.files);
+    next();
+  },
   createProduct
 );
 router.get("/:id", getProductsById);

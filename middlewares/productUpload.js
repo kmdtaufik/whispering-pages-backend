@@ -35,6 +35,11 @@ const productUpload = multer({
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
+    fieldSize: 10 * 1024 * 1024, // 10MB for field data
+  },
+  onError: (err, next) => {
+    console.error("Multer error:", err);
+    next(err);
   },
 });
 
