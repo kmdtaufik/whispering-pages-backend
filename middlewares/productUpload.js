@@ -19,9 +19,14 @@ if (process.env.NODE_ENV === "production") {
   storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-      folder: "products", // Optional: organize uploads in folders
+      folder: "whispering-pages/products", // Optional: organize uploads in folders
       allowed_formats: ["jpeg", "jpg", "png", "gif", "webp"],
       transformation: [{ width: 1000, height: 1000, crop: "limit" }], // Optional: resize images
+      public_id: (req, file) => {
+        return `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
+          file.fieldname
+        }`;
+      },
     },
   });
 } else {

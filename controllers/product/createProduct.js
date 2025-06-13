@@ -112,9 +112,9 @@ const createProduct = async (req, res) => {
     }
 
     // Handle file uploads
-    const productThumbnail = req.files?.thumbnail?.[0]?.filename || null;
+    const productThumbnail = req.files?.thumbnail?.[0]?.path || null;
     const productImages =
-      req.files?.images?.map((file) => file.filename).join(",") || "";
+      req.files?.images?.map((file) => file.path).join(",") || "";
 
     // Validate required fields
     if (!productThumbnail) {
