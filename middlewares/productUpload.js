@@ -11,46 +11,20 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-let storage;
-
-// Conditionally set storage based on environment
-if (process.env.NODE_ENV === "production") {
-  // Production: Use Cloudinary storage
-  storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: "whispering-pages/products", // Optional: organize uploads in folders
-      allowed_formats: ["jpeg", "jpg", "png", "gif", "webp"],
-      transformation: [{ width: 1000, height: 1000, crop: "limit" }], // Optional: resize images
-      public_id: (req, file) => {
-        return `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
-          file.fieldname
-        }`;
-      },
-    },
-  });
-} else {
-  // Development: Use local disk storage
-  const uploadsDir = path.join(__dirname, "../uploads");
-
-  // Ensure uploads directory exists
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-
-  storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-      const fileExtension = path.extname(file.originalname);
-      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
+// Production: Use Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "whispering-pages/products", // Optional: organize uploads in folders
+    allowed_formats: ["jpeg", "jpg", "png", "gif", "webp"],
+    transformation: [{ width: 1000, height: 1000, crop: "limit" }], // Optional: resize images
+    public_id: (req, file) => {
+      return `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
         file.fieldname
-      }${fileExtension}`;
-      cb(null, uniqueName);
+      }`;
     },
-  });
-}
+  },
+});
 
 // File filter for images only
 const fileFilter = (req, file, cb) => {
