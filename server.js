@@ -5,6 +5,7 @@ const productRoutes = require("./routes/productRoutes");
 const cors = require("cors");
 const path = require("path");
 const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config(); // Load environment variables
 
@@ -35,6 +36,9 @@ app.use("/api/products", productRoutes);
 
 //User Routes
 app.get("/api/user", userRoutes);
+
+//Auth Routes
+app.use("/api/auth", authRoutes);
 // MongoDB connection
 mongoose
   .connect(process.env.MONGODB_URI, {
