@@ -2,21 +2,22 @@ const User = require("../../models/User");
 
 const createUser = async (req, res) => {
   try {
-    const { name, email, username, avatar } = req.body;
+    const { name, email, role, avatar, password } = req.body;
     console.log("Received user data:", req.body);
     console.log("Received files:", req.files);
 
     //Validate required fields
-    if (!name || !email || !username) {
+    if (!name || !email || !role || !password) {
       return res
         .status(400)
-        .json({ message: "Name, email, and username are required." });
+        .json({ message: "Name, email, role, and password are required." });
     }
     //Save the user to the database
     const newUser = new User({
       name,
       email,
-      username,
+      password,
+      role: role || "viewer", // Default role if not provided
       avatar:
         avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg", // Default avatar if not provided
     });

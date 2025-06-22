@@ -3,7 +3,7 @@ const user = require("../../models/User");
 const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, email, username, avatar } = req.body;
+    const { name, email, role, avatar, password } = req.body;
 
     // Validate required fields
     if (!userId) {
@@ -16,7 +16,8 @@ const updateUser = async (req, res) => {
       {
         name,
         email,
-        username,
+        role,
+        password,
         avatar:
           avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg", // Default avatar if not provided
       },

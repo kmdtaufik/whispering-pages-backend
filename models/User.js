@@ -1,6 +1,6 @@
 // This file defines the User model for MongoDB using Mongoose.
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "editor", "viewer"],
       default: "admin",
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+    // isActive: {
+    //   type: Boolean,
+    //   default: true,
+    // },
   },
   {
     timestamps: true, // Automatically manage createdAt and updatedAt fields
