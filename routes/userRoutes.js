@@ -4,6 +4,7 @@ const getUser = require("../controllers/user/getUser");
 const getAllUsers = require("../controllers/user/getAllUser");
 const createUser = require("../controllers/user/createUser");
 const deleteUser = require("../controllers/user/deleteUser");
+const updateUser = require("../controllers/user/updateUser");
 const userUpload = require("../middlewares/userUpload");
 
 // CRUD operations routes
@@ -23,12 +24,20 @@ router.post(
   createUser
 );
 
-//Get user by ID or email
-router.get("/:email", getUser);
-router.get("/:userId", getUser);
+// Get all users (must come before parameterized routes)
 router.get("/", getAllUsers);
 
-//Delete user by ID
+// Update user by ID
+router.put(
+  "/:userId",
+  userUpload.fields([{ name: "avatar", maxCount: 1 }]),
+  updateUser
+);
+
+// Get user by ID
+router.get("/:userId", getUser);
+
+// Delete user by ID
 router.delete("/:userId", deleteUser);
 
 module.exports = router;

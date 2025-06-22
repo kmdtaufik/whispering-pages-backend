@@ -1,8 +1,11 @@
-const user = require("../../models/User");
+const User = require("../../models/User");
 
 const getUser = async (req, res) => {
-  if (req.params.userId) {
-    try {
+  try {
+    let foundUser;
+
+    // Check if it's a request by userId (from params)
+    if (req.params.userId) {
       const { userId } = req.params;
 
       // Validate userId
@@ -11,23 +14,10 @@ const getUser = async (req, res) => {
       }
 
       // Search for the user by ID
-      const foundUser = await user.findById(userId);
-
-      if (!foundUser) {
-        return res.status(404).json({ message: "User not found." });
-      }
-
-      res.status(200).json({ user: foundUser });
-    } catch (error) {
-      console.error("Error retrieving user:", error);
-      res
-        .status(500)
-        .json({ message: "Could not retrieve user", error: error.message });
+      foundUser = await User.findById(userId);
     }
-  }
-
-  if (req.query.email) {
-    try {
+    // Check if it's a request by email (from query)
+    else if (req.query.email) {
       const { email } = req.query;
 
       // Validate email
@@ -36,17 +26,27 @@ const getUser = async (req, res) => {
       }
 
       // Search for the user by email
-      const foundUser = await user.findOne({ email });
+      foundUser = await User.findOne({ email });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "User ID or email is required." });
+    }
 
-      if (!foundUser) {
-        return res.status(404).json({ message: "User not found." });
-      }
+    if (!foundUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
-      res.status(200).json({ user: foundUser });
-    } catch (error) {
-      console.error("Error retrieving user:", error);
-      res
-        .status(500)
+    res.status(200).json({ user: foundUser });
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res
+      .status(500)
+      .json({ message: "Could not retrieve user", error: error.message });
+  }
+};
+
+module.exports = getUser;
         .json({ message: "Could not retrieve user", error: error.message });
     }
   }
