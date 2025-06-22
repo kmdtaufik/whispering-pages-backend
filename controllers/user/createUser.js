@@ -4,6 +4,7 @@ const createUser = async (req, res) => {
   try {
     const { name, email, role, avatar, password } = req.body;
     console.log("Received user data:", req.body);
+    const userAvatar = req.files?.avatar?.[0]?.path || null;
     console.log("Received files:", req.files);
 
     //Validate required fields
@@ -19,7 +20,7 @@ const createUser = async (req, res) => {
       password,
       role: role || "viewer", // Default role if not provided
       avatar:
-        avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg", // Default avatar if not provided
+        userAvatar || "https://www.svgrepo.com/show/452030/avatar-default.svg", // Default avatar if not provided
     });
 
     const savedUser = await newUser.save();
