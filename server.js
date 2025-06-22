@@ -33,11 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/products", productRoutes);
-
-//User Routes
-app.get("/api/user", userRoutes);
-
-//Auth Routes
+app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 // MongoDB connection
 mongoose
