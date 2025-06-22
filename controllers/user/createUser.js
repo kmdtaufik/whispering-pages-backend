@@ -26,12 +26,20 @@ const createUser = async (req, res) => {
     const savedUser = await newUser.save();
     res
       .status(201)
-      .json({ message: "User created successfully", user: savedUser });
+      .json({
+        success: true,
+        message: "User created successfully",
+        user: savedUser,
+      });
   } catch (error) {
     console.error("Error creating user:", error);
     res
       .status(500)
-      .json({ message: "Could not create user", error: error.message });
+      .json({
+        success: false,
+        message: "Could not create user",
+        error: error.message,
+      });
   }
 };
 
