@@ -25,30 +25,7 @@ const getUser = async (req, res) => {
         .json({ message: "Could not retrieve user", error: error.message });
     }
   }
-  if (req.query.username) {
-    try {
-      const { username } = req.query;
 
-      // Validate username
-      if (!username) {
-        return res.status(400).json({ message: "Username is required." });
-      }
-
-      // Search for the user by username
-      const foundUser = await user.findOne({ username });
-
-      if (!foundUser) {
-        return res.status(404).json({ message: "User not found." });
-      }
-
-      res.status(200).json({ user: foundUser });
-    } catch (error) {
-      console.error("Error retrieving user:", error);
-      res
-        .status(500)
-        .json({ message: "Could not retrieve user", error: error.message });
-    }
-  }
   if (req.query.email) {
     try {
       const { email } = req.query;

@@ -23,9 +23,8 @@ router.post(
   createUser
 );
 
-//Get user by ID or username or email
+//Get user by ID or email
 router.get("/:email", getUser);
-router.get("/:username", getUser);
 router.get("/:userId", getUser);
 router.get("/", getAllUsers);
 

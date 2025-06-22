@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "whispering-pages/users", // Optional: organize uploads in folders
-    allowed_formats: ["jpeg", "jpg", "png", "gif", "webp"],
+    allowed_formats: ["jpeg", "jpg", "png", "gif", "webp", "svg"], // Allowed image formats
     transformation: [{ width: 1000, height: 1000, crop: "limit" }], // Optional: resize images
     public_id: (req, file) => {
       return `${Date.now()}-${Math.round(Math.random() * 1e9)}-${
