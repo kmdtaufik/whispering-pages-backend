@@ -28,9 +28,7 @@ const getUser = async (req, res) => {
       // Search for the user by email
       foundUser = await User.findOne({ email });
     } else {
-      return res
-        .status(400)
-        .json({ message: "User ID or email is required." });
+      return res.status(400).json({ message: "User ID or email is required." });
     }
 
     if (!foundUser) {
@@ -43,12 +41,6 @@ const getUser = async (req, res) => {
     res
       .status(500)
       .json({ message: "Could not retrieve user", error: error.message });
-  }
-};
-
-module.exports = getUser;
-        .json({ message: "Could not retrieve user", error: error.message });
-    }
   }
 };
 
