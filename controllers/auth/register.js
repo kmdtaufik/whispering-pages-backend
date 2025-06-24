@@ -15,6 +15,7 @@ const register = async (req, res) => {
       name,
       email,
       password,
+      role: "user", // Default role
       avatar:
         avatar || "https://www.svgrepo.com/show/452030/avatar-default.svg", // Default avatar if not provided
     });
