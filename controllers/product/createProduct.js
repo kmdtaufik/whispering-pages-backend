@@ -4,7 +4,6 @@ const createProduct = async (req, res) => {
   try {
     // Extract all fields from req.body
     const {
-      slug,
       productName,
       productNameLocal,
       productDescription,
@@ -110,6 +109,16 @@ const createProduct = async (req, res) => {
         },
       });
     }
+
+    //Auto generate slug always
+    const slug = (productName) => {
+      return `${Date.now()}-${productName
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+        .trim()
+        .replace(/\s+/g, "-") // Replace spaces with hyphens
+        .substring(0, 50)}`;
+    };
 
     // Handle file uploads
     const productThumbnail = req.files?.thumbnail?.[0]?.path || null;
