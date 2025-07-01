@@ -111,14 +111,14 @@ const createProduct = async (req, res) => {
     }
 
     //Auto generate slug always
-    const slug = (productName) => {
+    const slug = ((productName) => {
       return `${Date.now()}-${productName
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
         .trim()
         .replace(/\s+/g, "-") // Replace spaces with hyphens
         .substring(0, 50)}`;
-    };
+    })(productName);
 
     // Handle file uploads
     const productThumbnail = req.files?.thumbnail?.[0]?.path || null;
