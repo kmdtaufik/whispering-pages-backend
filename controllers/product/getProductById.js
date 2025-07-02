@@ -2,7 +2,7 @@ const Product = require("../../models/Product");
 
 const getProductById = async (req, res) => {
   try {
-    const productSlug = req.query.slug || req.params.slug;
+    const productSlug = req.params.slug;
 
     if (!productSlug) {
       return res.status(400).json({ message: "Product slug is required" });
