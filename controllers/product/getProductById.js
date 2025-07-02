@@ -2,13 +2,13 @@ const Product = require("../../models/Product");
 
 const getProductById = async (req, res) => {
   try {
-    const productId = req.params.id;
+    const productSlug = req.query.slug || req.params.slug;
 
-    if (!productId) {
-      return res.status(400).json({ message: "Product ID is required" });
+    if (!productSlug) {
+      return res.status(400).json({ message: "Product slug is required" });
     }
 
-    const product = await Product.findById(productId).lean();
+    const product = await Product.findOne({ slug: productSlug }).lean();
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
