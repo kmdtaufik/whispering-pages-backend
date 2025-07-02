@@ -112,12 +112,12 @@ const createProduct = async (req, res) => {
 
     //Auto generate slug always
     const slug = ((productName) => {
-      return `${Date.now()}-${productName
+      return `${productName
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
         .trim()
         .replace(/\s+/g, "-") // Replace spaces with hyphens
-        .substring(0, 50)}`;
+        .substring(0, 50)}-${Date.now()}`;
     })(productName);
 
     // Handle file uploads
