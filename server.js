@@ -16,6 +16,7 @@ app.use(
   cors({
     origin: [
       "https://whispering-pages-admin-panel.vercel.app",
+      "https://whispering-pages.vercel.app",
       "http://localhost:5173",
     ],
     credentials: true,
